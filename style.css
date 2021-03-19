@@ -98,6 +98,7 @@ h6 {
   background-color: #4682b4;
   padding: 2rem;
   text-align: center;
+  overflow: auto;
 }
 h1 {
   font-size: 3rem;
@@ -221,7 +222,7 @@ h1 {
   background-position: center;
   background-size: cover;
 }
-.bomb {
+.bombs {
   background-color: red;
 }
 .num0 {
@@ -259,4 +260,7 @@ h1 {
 .gameOver {
   border: 0.5rem solid #a52a2a;
   /* background-color: #a52a2a; */
+}
+.win {
+  border: 0.5rem solid green;
 }
