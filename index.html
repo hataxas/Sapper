@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <title>Sapper Game</title>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="container">
+      <h1>Sapper Game</h1>
+      <div class="menu">
+        <ul class="menu-list">
+          <li class="item-menu message">
+            <div class="text">Hi!!!</div>
+          </li>
+          <li class="item-menu field-size">
+            <a class="link" href="#">New game</a>
+            <ul class="sub-menu-list">
+              <li class="item-sub-menu menu-small">
+                <a class="link" href="#">Small</a>
+              </li>
+              <li class="item-sub-menu menu-medium">
+                <a class="link" href="#">Medium</a>
+              </li>
+              <li class="item-sub-menu menu-big">
+                <a class="link" href="#">Big</a>
+              </li>
+            </ul>
+          </li>
+          <!-- <li class="item-menu new-game">
+            <a href="#" type="button" class="link button">New game</a>
+          </li> -->
+        </ul>
+      </div>
+      <div class="board">
+        <div id='cells' class="cells">
+          <!-- ячейки добавляются js -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

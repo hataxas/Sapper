@@ -1,0 +1,262 @@
+* {
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+*,
+*::before,
+*::after {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+:focus,
+:active {
+  outline: none;
+}
+
+a:focus,
+a:active {
+  outline: none;
+}
+
+nav,
+footer,
+header,
+aside {
+  display: block;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  font-size: 100%;
+  line-height: 1;
+  font-size: 10px;
+  -ms-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+input,
+button,
+textarea {
+  font-family: inherit;
+}
+
+input::-ms-clear {
+  display: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+button::-moz-focus-inner {
+  padding: 0;
+  border: 0;
+}
+
+a,
+a:visited {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+ul li {
+  list-style: none;
+}
+
+img {
+  vertical-align: top;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: 400;
+}
+.wrapper {
+  width: 90%;
+  height: 100%;
+  margin: 0 auto;
+  overflow: auto;
+}
+.container {
+  width: 100%;
+  min-width: 70rem;
+  height: 100%;
+  background-color: #4682b4;
+  padding: 2rem;
+  text-align: center;
+}
+h1 {
+  font-size: 3rem;
+  color: #fff;
+  margin: 2rem 0 4rem;
+}
+
+/* Menu */
+.menu {
+  margin: 1rem auto;
+  width: 59rem;
+  padding: 1rem;
+}
+.menu-list {
+  display: flex;
+  justify-content: space-between;
+  font-size: 2rem;
+}
+.item-menu {
+  position: relative;
+  margin: 0 auto;
+  width: 10rem;
+  padding: 0.5rem;
+  background-color: #00bfff;
+}
+.item-sub-menu {
+  margin: 0 0 0.5rem;
+  background-color: #87cefa;
+  padding: 0.5rem;
+}
+.link {
+  color: #000;
+}
+.sub-menu-list {
+  /* чтобы меню было скрыто пока не наведем мышку */
+  display: none;
+  /* задаем комфортную минимальную ширину */
+  width: 10rem;
+  position: absolute;
+  /* разрыва между всплывающим меню и пунктом меню к которму мы переходим быть не должно, иначе при попытке перейти к подменю событие hover исчезнет и подменю пропадет */
+  top: 3rem;
+  left: 0;
+  /* top: -2rem;
+  left: 100%; */
+  font-size: 1.5rem;
+  background-color: #00bfff;
+  padding: 0.5rem 0.5rem 0;
+}
+.menu-list > li:hover .sub-menu-list {
+  display: block;
+}
+.message {
+  padding: 0;
+  background-color: #b0c4de;
+  border: 0.5rem solid #00bfff;
+  width: 25rem;
+}
+/* Field */
+.board {
+  background-color: #fff;
+  margin: 1rem auto;
+  width: 58rem;
+  height: 58rem;
+  padding: 2rem;
+}
+.cells {
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.cell {
+  background-color: #87ceeb;
+  cursor: pointer;
+}
+/* Small field */
+.smallBoard {
+  width: 58rem;
+  height: 58rem;
+}
+.smallCells {
+  width: 54rem;
+  height: 54rem;
+}
+.small {
+  width: 5rem;
+  height: 5rem;
+  margin: 0.2rem;
+}
+/* Medium field */
+.mediumBoard {
+  width: 58.4rem;
+  height: 58.4rem;
+}
+.mediumCells {
+  width: 54.4rem;
+  height: 54.4rem;
+}
+.medium {
+  width: 3rem;
+  height: 3rem;
+  margin: 0 0.1rem;
+}
+/* Big field */
+.bigBoard {
+  width: 59rem;
+  height: 59rem;
+}
+.bigCells {
+  width: 55rem;
+  height: 55rem;
+}
+.big {
+  width: 2rem;
+  height: 2rem;
+  margin: 0 0.1rem;
+}
+
+.clicked {
+  background-color: #b0c4de;
+  background-position: center;
+  background-size: cover;
+}
+.bomb {
+  background-color: red;
+}
+.num0 {
+}
+.num1 {
+  background-image: url("img/one.png");
+}
+.num2 {
+  background-image: url("img/two.png");
+}
+.num3 {
+  background-image: url("img/three.png");
+}
+.num4 {
+  background-image: url("img/four.png");
+}
+.num5 {
+  background-image: url("img/five.png");
+}
+.num6 {
+  background-image: url("img/six.png");
+}
+.num7 {
+  background-image: url("img/seven.png");
+}
+.num8 {
+  background-image: url("img/eight.png");
+}
+.flag {
+  background-image: url("img/flag.png");
+  background-position: center;
+  background-size: cover;
+  background-color: #87ceeb;
+}
+.gameOver {
+  border: 0.5rem solid #a52a2a;
+  /* background-color: #a52a2a; */
+}
