@@ -1,12 +1,4 @@
 let gameOver = false;
-// let cell = {
-//   open: false,
-//   closed: true,
-//   flag: false,
-//   bomb: "",
-//   number: '',
-//   neighbours: []
-// };
 
 const board = document.querySelector('.board');
 const element = document.getElementById('cells');
@@ -76,12 +68,13 @@ function drawField(numberOfRows, numberOfColumns, numberOfBombs) {
   const cells = document.querySelectorAll('.cell');
   let field = createField(numberOfRows, numberOfColumns, numberOfBombs);
   let numberOfPlantedFlags = 0;
+  messageDisplay.classList.remove('win');
   for (let i = 0; i < field.length; i++) {
     cells[i].classList.remove('num0', 'num1', 'num2', 'num3', 'num4', 'num5', 'num6', 'num7', 'num8', 'bombs', 'clicked', 'flag');
     cells[i].addEventListener('contextmenu', function (event) {
       event.preventDefault();
-      if (!gameOver) {
-        if (!field[i].flag && !field[i].open) {
+      if (!gameOver && !field[i].open) {
+        if (!field[i].flag) {
           this.classList.add('flag');
           field[i].flag = true;
           console.log(field[i]);
@@ -93,6 +86,7 @@ function drawField(numberOfRows, numberOfColumns, numberOfBombs) {
           numberOfPlantedFlags--;
         }
         messageDisplay.textContent = (numberOfBombs - numberOfPlantedFlags) + " " + "flags left";
+        checkField(field);
       }
     });
     if (field[i].bomb === '*') {
@@ -107,9 +101,32 @@ function drawField(numberOfRows, numberOfColumns, numberOfBombs) {
           if (!gameOver) {
             this.classList.add('num' + field[i].number, 'clicked');
             field[i].open = true;
+            openEmptyCells(field[i], field, numberOfColumns);
             checkField(field);
           }
         });
+      }
+    }
+  }
+}
+// let cell = {
+//   open: false,
+//   flag: false,
+//   bomb: "",
+//   number: '',
+//   neighbours: []
+// };
+
+function openEmptyCells(cell, arr, numberOfColumns) {
+  const cells = document.querySelectorAll('.cell');
+  if (cell.number === 0) {
+    for (let j = 0; j < cell.neighbours.length; j++) {
+      let k = cell.neighbours[j];
+      let neighbourIndex = coordsToIndex(k, numberOfColumns);
+      if (arr[neighbourIndex].number === 0 && !arr[neighbourIndex].open) {
+        cells[neighbourIndex].classList.add('num0', 'clicked');
+        arr[neighbourIndex].open = true;
+        openEmptyCells(arr[neighbourIndex], arr, numberOfColumns);
       }
     }
   }
@@ -120,10 +137,12 @@ function checkField(arr) {
   for (let i = 0; i < arr.length; i++) {
     if (arr[i].flag && arr[i].bomb !== '*') {
       gameOver = false;
+      console.log(i)
       break;
     }
     if (!arr[i].open && !arr[i].flag) {
       gameOver = false;
+      console.log(i)
       break;
     }
   }
