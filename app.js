@@ -109,13 +109,6 @@ function drawField(numberOfRows, numberOfColumns, numberOfBombs) {
     }
   }
 }
-// let cell = {
-//   open: false,
-//   flag: false,
-//   bomb: "",
-//   number: '',
-//   neighbours: []
-// };
 
 function openEmptyCells(cell, arr, numberOfColumns) {
   const cells = document.querySelectorAll('.cell');
@@ -123,8 +116,8 @@ function openEmptyCells(cell, arr, numberOfColumns) {
     for (let j = 0; j < cell.neighbours.length; j++) {
       let k = cell.neighbours[j];
       let neighbourIndex = coordsToIndex(k, numberOfColumns);
-      if (arr[neighbourIndex].number === 0 && !arr[neighbourIndex].open) {
-        cells[neighbourIndex].classList.add('num0', 'clicked');
+      if ([0, 1, 2, 3, 4, 5, 6, 7, 8].includes(arr[neighbourIndex].number) && !arr[neighbourIndex].open) {
+        cells[neighbourIndex].classList.add('num' + arr[neighbourIndex].number, 'clicked');
         arr[neighbourIndex].open = true;
         openEmptyCells(arr[neighbourIndex], arr, numberOfColumns);
       }
