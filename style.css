@@ -217,7 +217,7 @@ h1 {
   margin: 0 0.1rem;
 }
 
-.clicked {
+.open {
   background-color: #b0c4de;
   background-position: center;
   background-size: cover;

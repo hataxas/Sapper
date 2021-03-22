@@ -46,7 +46,7 @@ function bigField() {
 function drawFieldRightSize(size, numberOfRows, numberOfColumns, numberOfBombs) {
   board.classList.add(size + 'Board');
   cellsContainer.classList.add(size + 'Cells');
-  drawCells(numberOfRows * numberOfColumns);
+  drawClosedCells(numberOfRows * numberOfColumns);
   const cells = document.querySelectorAll('.cell');
   for (let i = 0; i < (numberOfRows * numberOfColumns); i++) {
     cells[i].classList.add(size);
@@ -55,7 +55,7 @@ function drawFieldRightSize(size, numberOfRows, numberOfColumns, numberOfBombs) 
 }
 
 // Draw cells
-function drawCells(numberOfCells) {
+function drawClosedCells(numberOfCells) {
   cellsContainer.innerHTML = '';
   gameOver = false;
   messageDisplay.classList.remove('gameOver');
@@ -73,32 +73,14 @@ function createAndDrawField(numberOfRows, numberOfColumns, numberOfBombs) {
   numberOfPlantedFlags = 0;
   messageDisplay.classList.remove('win');
   for (let i = 0; i < field.length; i++) {
-    cells[i].classList.remove('num0', 'num1', 'num2', 'num3', 'num4', 'num5', 'num6', 'num7', 'num8', 'bombs', 'clicked', 'flag');
+    cells[i].classList.remove('num0', 'num1', 'num2', 'num3', 'num4', 'num5', 'num6', 'num7', 'num8', 'bombs', 'open', 'flag');
     setRemoveFlag(cells[i], field, field[i], numberOfBombs, numberOfPlantedFlags);
     openCell(field[i], field, cells[i], numberOfColumns);
-    // if (field[i].bomb === '*') {
-    //   cells[i].addEventListener('click', function () {
-    //     if (!gameOver) {
-    //       openAllCells(field);
-    //     }
-    //   });
-    // } else {
-    //   if ([0, 1, 2, 3, 4, 5, 6, 7, 8].includes(field[i].number)) {
-    //     cells[i].addEventListener('click', function () {
-    //       if (!gameOver) {
-    //         this.classList.add('num' + field[i].number, 'clicked');
-    //         field[i].open = true;
-    //         openEmptyCells(field[i], field, numberOfColumns);
-    //         checkField(field);
-    //       }
-    //     });
-    //   }
-    // }
   }
 }
+
 function setRemoveFlag(cell, arr, arrElement, numberOfBombs) {
   messageDisplay.textContent = numberOfBombs + " flags left";
-  console.log('before:', numberOfPlantedFlags);
   cell.addEventListener('contextmenu', function () {
     if (!gameOver && !arrElement.open) {
       if (!arrElement.flag) {
@@ -106,11 +88,9 @@ function setRemoveFlag(cell, arr, arrElement, numberOfBombs) {
         arrElement.flag = true;
         console.log(arrElement);
         numberOfPlantedFlags++;
-        console.log('numberOfPlantedFlags:', numberOfPlantedFlags);
       } else {
         this.classList.remove('flag');
         arrElement.flag = false;
-        console.log(arrElement);
         numberOfPlantedFlags--;
       }
       messageDisplay.textContent = (numberOfBombs - numberOfPlantedFlags) + " " + "flags left";
@@ -130,7 +110,7 @@ function openCell(arrElement, arr, cell, numberOfColumns) {
     if ([0, 1, 2, 3, 4, 5, 6, 7, 8].includes(arrElement.number)) {
       cell.addEventListener('click', function () {
         if (!gameOver) {
-          this.classList.add('num' + arrElement.number, 'clicked');
+          this.classList.add('num' + arrElement.number, 'open');
           arrElement.open = true;
           openEmptyCells(arrElement, arr, numberOfColumns);
           checkField(arr);
@@ -147,7 +127,7 @@ function openEmptyCells(cell, arr, numberOfColumns) {
       let k = cell.neighbours[j];
       let neighbourIndex = coordsToIndex(k, numberOfColumns);
       if ([0, 1, 2, 3, 4, 5, 6, 7, 8].includes(arr[neighbourIndex].number) && !arr[neighbourIndex].open) {
-        cells[neighbourIndex].classList.add('num' + arr[neighbourIndex].number, 'clicked');
+        cells[neighbourIndex].classList.add('num' + arr[neighbourIndex].number, 'open');
         arr[neighbourIndex].open = true;
         openEmptyCells(arr[neighbourIndex], arr, numberOfColumns);
       }
@@ -170,7 +150,7 @@ function checkField(arr) {
     }
   }
   if (gameOver) {
-    win(arr);
+    showWinningMessage(arr);
   }
 }
 
@@ -205,11 +185,11 @@ function createUnshaffledField(numberOfRows, numberOfColumns, numberOfBombs) {
   let numberOfPlantingBombs = 0;
   let fieldWithBomb = fieldWithCells.map(function (cell) {
     if (numberOfPlantingBombs < numberOfBombs) {
-      cell['bomb'] = '*';  //!
+      cell['bomb'] = '*';
       numberOfPlantingBombs++;
       return cell;
     } else {
-      cell['bomb'] = ' ';  //!
+      cell['bomb'] = ' ';
       return cell;
     }
   });
@@ -245,7 +225,7 @@ function coordsToIndex(k, numberOfColumns) {
 function findNeighbours(numberOfRows, numberOfColumns, k) {
   let x = k[0];
   let y = k[1];
-  let neighbours = []; //!
+  let neighbours = [];
   if (x !== 0 && y !== 0 && x !== (numberOfRows - 1) && y !== (numberOfColumns - 1)) {
     neighbours = [[x, y - 1], [x, y + 1], [x - 1, y], [x + 1, y], [x - 1, y - 1], [x - 1, y + 1], [x + 1, y - 1], [x + 1, y + 1]];
   }
@@ -281,8 +261,8 @@ function plantNumbers(arr, numberOfRows, numberOfColumns) {
   for (let i = 0; i < arr.length; i++) {
     let k = indexToCoords(i, numberOfColumns);
     let neighbours = findNeighbours(numberOfRows, numberOfColumns, k);
-    arr[i].neighbours = neighbours; //!
-    if (arr[i].bomb !== '*') { //!
+    arr[i].neighbours = neighbours;
+    if (arr[i].bomb !== '*') {
       let num = 0;
       for (let j = 0; j < neighbours.length; j++) {
         let neighbourI = coordsToIndex(neighbours[j], numberOfColumns)
@@ -290,9 +270,9 @@ function plantNumbers(arr, numberOfRows, numberOfColumns) {
           num++;
         }
       }
-      arr[i].number = num; //!
+      arr[i].number = num;
     } else {
-      arr[i].number = ''; //!
+      arr[i].number = '';
     }
   }
 }
@@ -309,13 +289,13 @@ function openAllCells(arr) {
       cells[i].classList.add('bombs');
     } else {
       if ([0, 1, 2, 3, 4, 5, 6, 7, 8].includes(arr[i].number)) {
-        cells[i].classList.add('num' + arr[i].number, 'clicked');
+        cells[i].classList.add('num' + arr[i].number, 'open');
       }
     }
   }
 }
 
-function win(arr) {
+function showWinningMessage(arr) {
   const cells = document.querySelectorAll('.cell');
   gameOver = true;
   messageDisplay.textContent = "You won!!!";
