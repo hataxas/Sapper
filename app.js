@@ -110,9 +110,7 @@ function openCell(arrElement, arr, cell, numberOfColumns) {
       cell.addEventListener('click', function () {
         if (!gameOver) {
           this.classList.add('num' + arrElement.number, 'open');
-          arrElement.open = true;
           openEmptyCells(arrElement, arr, numberOfColumns);
-          checkField(arr);
         }
       });
     }
@@ -120,8 +118,9 @@ function openCell(arrElement, arr, cell, numberOfColumns) {
 }
 
 function openEmptyCells(cell, arr, numberOfColumns) {
-  const cells = document.querySelectorAll('.cell');
+  cell.open = true;
   if (cell.number === 0) {
+    const cells = document.querySelectorAll('.cell');
     for (let j = 0; j < cell.neighbours.length; j++) {
       let k = cell.neighbours[j];
       let neighbourIndex = coordsToIndex(k, numberOfColumns);
@@ -132,12 +131,12 @@ function openEmptyCells(cell, arr, numberOfColumns) {
       }
     }
   }
+  checkField(arr);
 }
 
 function openCellsWithoutBombs(arrElement, arr, cell, numberOfColumns) {
   const cells = document.querySelectorAll('.cell');
   cell.addEventListener('dblclick', function () {
-    console.log(cell);
     if (arrElement.open && !gameOver) {
       for (let j = 0; j < arrElement.neighbours.length; j++) {
         let k = arrElement.neighbours[j];
@@ -146,8 +145,7 @@ function openCellsWithoutBombs(arrElement, arr, cell, numberOfColumns) {
           break;
         } else {
           cells[neighbourIndex].classList.add('num' + arr[neighbourIndex].number, 'open');
-          arr[neighbourIndex].open = true;
-          checkField(arr);
+          openEmptyCells(arr[neighbourIndex], arr, numberOfColumns)
         }
       }
     }
@@ -159,18 +157,23 @@ function checkField(arr) {
   for (let i = 0; i < arr.length; i++) {
     if (arr[i].flag && arr[i].bomb !== '*') {
       gameOver = false;
-      //console.log(i)
       break;
     }
     if (!arr[i].open && !arr[i].flag) {
       gameOver = false;
-      //console.log(i)
       break;
     }
   }
   if (gameOver) {
     showWinningMessage(arr);
   }
+}
+
+function showWinningMessage(arr) {
+  const cells = document.querySelectorAll('.cell');
+  gameOver = true;
+  messageDisplay.textContent = "You won!!!";
+  messageDisplay.classList.add('win');
 }
 
 //! Create a field
@@ -312,11 +315,4 @@ function openAllCells(arr) {
       }
     }
   }
-}
-
-function showWinningMessage(arr) {
-  const cells = document.querySelectorAll('.cell');
-  gameOver = true;
-  messageDisplay.textContent = "You won!!!";
-  messageDisplay.classList.add('win');
 }
