@@ -2,7 +2,7 @@ let gameOver = false;
 let numberOfPlantedFlags = 0;
 
 const board = document.querySelector('.board');
-const element = document.getElementById('cells');
+const cellsContainer = document.getElementById('cellsContainer');
 const menuSmallFieldSize = document.querySelector('.menu-small');
 const menuMediumlFieldSize = document.querySelector('.menu-medium');
 const menuBigFieldSize = document.querySelector('.menu-big');
@@ -11,6 +11,9 @@ const messageDisplay = document.querySelector('.message');
 menuSmallFieldSize.addEventListener("click", smallField);
 menuMediumlFieldSize.addEventListener("click", mediumField);
 menuBigFieldSize.addEventListener("click", bigField);
+cellsContainer.addEventListener('contextmenu', function (event) {
+  event.preventDefault();
+});
 
 //! Draw a field
 // Field 10*10
@@ -42,7 +45,7 @@ function bigField() {
 
 function drawFieldRightSize(size, numberOfRows, numberOfColumns, numberOfBombs) {
   board.classList.add(size + 'Board');
-  element.classList.add(size + 'Cells');
+  cellsContainer.classList.add(size + 'Cells');
   drawCells(numberOfRows * numberOfColumns);
   const cells = document.querySelectorAll('.cell');
   for (let i = 0; i < (numberOfRows * numberOfColumns); i++) {
@@ -53,13 +56,13 @@ function drawFieldRightSize(size, numberOfRows, numberOfColumns, numberOfBombs) 
 
 // Draw cells
 function drawCells(numberOfCells) {
-  element.innerHTML = '';
+  cellsContainer.innerHTML = '';
   gameOver = false;
   messageDisplay.classList.remove('gameOver');
   for (let i = 0; i < numberOfCells; i++) {
     const newCell = document.createElement('div');
     newCell.classList.add('cell');
-    element.appendChild(newCell);
+    cellsContainer.appendChild(newCell);
   }
 }
 
