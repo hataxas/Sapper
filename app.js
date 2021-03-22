@@ -54,7 +54,6 @@ function drawFieldRightSize(size, numberOfRows, numberOfColumns, numberOfBombs) 
   createAndDrawField(numberOfRows, numberOfColumns, numberOfBombs);
 }
 
-// Draw cells
 function drawClosedCells(numberOfCells) {
   cellsContainer.innerHTML = '';
   gameOver = false;
@@ -66,7 +65,6 @@ function drawClosedCells(numberOfCells) {
   }
 }
 
-// Draw field
 function createAndDrawField(numberOfRows, numberOfColumns, numberOfBombs) {
   const cells = document.querySelectorAll('.cell');
   let field = createField(numberOfRows, numberOfColumns, numberOfBombs);
@@ -76,6 +74,7 @@ function createAndDrawField(numberOfRows, numberOfColumns, numberOfBombs) {
     cells[i].classList.remove('num0', 'num1', 'num2', 'num3', 'num4', 'num5', 'num6', 'num7', 'num8', 'bombs', 'open', 'flag');
     setRemoveFlag(cells[i], field, field[i], numberOfBombs, numberOfPlantedFlags);
     openCell(field[i], field, cells[i], numberOfColumns);
+    openCellsWithoutBombs(field[i], field, cells[i], numberOfColumns);
   }
 }
 
@@ -133,6 +132,26 @@ function openEmptyCells(cell, arr, numberOfColumns) {
       }
     }
   }
+}
+
+function openCellsWithoutBombs(arrElement, arr, cell, numberOfColumns) {
+  const cells = document.querySelectorAll('.cell');
+  cell.addEventListener('dblclick', function () {
+    console.log(cell);
+    if (arrElement.open && !gameOver) {
+      for (let j = 0; j < arrElement.neighbours.length; j++) {
+        let k = arrElement.neighbours[j];
+        let neighbourIndex = coordsToIndex(k, numberOfColumns);
+        if (arr[neighbourIndex].bomb === '*' && !arr[neighbourIndex].flag) {
+          break;
+        } else {
+          cells[neighbourIndex].classList.add('num' + arr[neighbourIndex].number, 'open');
+          arr[neighbourIndex].open = true;
+          checkField(arr);
+        }
+      }
+    }
+  });
 }
 
 function checkField(arr) {
