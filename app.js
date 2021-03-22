@@ -51,7 +51,7 @@ function drawFieldRightSize(size, numberOfRows, numberOfColumns, numberOfBombs) 
   for (let i = 0; i < (numberOfRows * numberOfColumns); i++) {
     cells[i].classList.add(size);
   }
-  drawField(numberOfRows, numberOfColumns, numberOfBombs);
+  createAndDrawField(numberOfRows, numberOfColumns, numberOfBombs);
 }
 
 // Draw cells
@@ -67,7 +67,7 @@ function drawCells(numberOfCells) {
 }
 
 // Draw field
-function drawField(numberOfRows, numberOfColumns, numberOfBombs) {
+function createAndDrawField(numberOfRows, numberOfColumns, numberOfBombs) {
   const cells = document.querySelectorAll('.cell');
   let field = createField(numberOfRows, numberOfColumns, numberOfBombs);
   numberOfPlantedFlags = 0;
@@ -75,31 +75,31 @@ function drawField(numberOfRows, numberOfColumns, numberOfBombs) {
   for (let i = 0; i < field.length; i++) {
     cells[i].classList.remove('num0', 'num1', 'num2', 'num3', 'num4', 'num5', 'num6', 'num7', 'num8', 'bombs', 'clicked', 'flag');
     setRemoveFlag(cells[i], field, field[i], numberOfBombs, numberOfPlantedFlags);
-    if (field[i].bomb === '*') {
-      cells[i].addEventListener('click', function () {
-        if (!gameOver) {
-          openAllCells(field);
-        }
-      });
-    } else {
-      if ([0, 1, 2, 3, 4, 5, 6, 7, 8].includes(field[i].number)) {
-        cells[i].addEventListener('click', function () {
-          if (!gameOver) {
-            this.classList.add('num' + field[i].number, 'clicked');
-            field[i].open = true;
-            openEmptyCells(field[i], field, numberOfColumns);
-            checkField(field);
-          }
-        });
-      }
-    }
+    openCell(field[i], field, cells[i], numberOfColumns);
+    // if (field[i].bomb === '*') {
+    //   cells[i].addEventListener('click', function () {
+    //     if (!gameOver) {
+    //       openAllCells(field);
+    //     }
+    //   });
+    // } else {
+    //   if ([0, 1, 2, 3, 4, 5, 6, 7, 8].includes(field[i].number)) {
+    //     cells[i].addEventListener('click', function () {
+    //       if (!gameOver) {
+    //         this.classList.add('num' + field[i].number, 'clicked');
+    //         field[i].open = true;
+    //         openEmptyCells(field[i], field, numberOfColumns);
+    //         checkField(field);
+    //       }
+    //     });
+    //   }
+    // }
   }
 }
 function setRemoveFlag(cell, arr, arrElement, numberOfBombs) {
   messageDisplay.textContent = numberOfBombs + " flags left";
   console.log('before:', numberOfPlantedFlags);
-  cell.addEventListener('contextmenu', function (event) {
-    event.preventDefault();
+  cell.addEventListener('contextmenu', function () {
     if (!gameOver && !arrElement.open) {
       if (!arrElement.flag) {
         this.classList.add('flag');
@@ -117,6 +117,27 @@ function setRemoveFlag(cell, arr, arrElement, numberOfBombs) {
       checkField(arr);
     }
   });
+}
+
+function openCell(arrElement, arr, cell, numberOfColumns) {
+  if (arrElement.bomb === '*') {
+    cell.addEventListener('click', function () {
+      if (!gameOver) {
+        openAllCells(arr);
+      }
+    });
+  } else {
+    if ([0, 1, 2, 3, 4, 5, 6, 7, 8].includes(arrElement.number)) {
+      cell.addEventListener('click', function () {
+        if (!gameOver) {
+          this.classList.add('num' + arrElement.number, 'clicked');
+          arrElement.open = true;
+          openEmptyCells(arrElement, arr, numberOfColumns);
+          checkField(arr);
+        }
+      });
+    }
+  }
 }
 
 function openEmptyCells(cell, arr, numberOfColumns) {
