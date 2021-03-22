@@ -1,4 +1,5 @@
 let gameOver = false;
+let numberOfPlantedFlags = 0;
 
 const board = document.querySelector('.board');
 const element = document.getElementById('cells');
@@ -12,43 +13,42 @@ menuMediumlFieldSize.addEventListener("click", mediumField);
 menuBigFieldSize.addEventListener("click", bigField);
 
 //! Draw a field
-// Рисуем поле 10*10
+// Field 10*10
 function smallField() {
-  board.classList.add('smallBoard');
-  element.classList.add('smallCells');
-  drawCells(100);
-  const cells = document.querySelectorAll('.cell');
-  for (let i = 0; i < 100; i++) {
-    cells[i].classList.add('small');
-  }
-  drawField(10, 10, 20);
-  messageDisplay.textContent = "20 flags left";
+  let numberOfRows = 10;
+  let numberOfColumns = 10;
+  let numberOfBombs = 20;
+  let size = 'small';
+  drawFieldRightSize(size, numberOfRows, numberOfColumns, numberOfBombs);
 }
 
-// Рисуем поле 17*17
+// Field 17*17
 function mediumField() {
-  board.classList.add('mediumBoard');
-  element.classList.add('mediumCells');
-  drawCells(17 * 17);
-  const cells = document.querySelectorAll('.cell');
-  for (let i = 0; i < (17 * 17); i++) {
-    cells[i].classList.add('medium');
-  }
-  drawField(17, 17, 50);
-  messageDisplay.textContent = "50 flags left";
+  let numberOfRows = 17;
+  let numberOfColumns = 17;
+  let numberOfBombs = 50;
+  let size = 'medium';
+  drawFieldRightSize(size, numberOfRows, numberOfColumns, numberOfBombs);
 }
 
-// Рисуем поле 25*25
+// Field 25*25
 function bigField() {
-  board.classList.add('bigBoard');
-  element.classList.add('bigCells');
-  drawCells(25 * 25);
+  let numberOfRows = 25;
+  let numberOfColumns = 25;
+  let numberOfBombs = 100;
+  let size = 'big';
+  drawFieldRightSize(size, numberOfRows, numberOfColumns, numberOfBombs);
+}
+
+function drawFieldRightSize(size, numberOfRows, numberOfColumns, numberOfBombs) {
+  board.classList.add(size + 'Board');
+  element.classList.add(size + 'Cells');
+  drawCells(numberOfRows * numberOfColumns);
   const cells = document.querySelectorAll('.cell');
-  for (let i = 0; i < (25 * 25); i++) {
-    cells[i].classList.add('big');
+  for (let i = 0; i < (numberOfRows * numberOfColumns); i++) {
+    cells[i].classList.add(size);
   }
-  drawField(25, 25, 100);
-  messageDisplay.textContent = "100 flags left";
+  drawField(numberOfRows, numberOfColumns, numberOfBombs);
 }
 
 // Draw cells
@@ -67,28 +67,11 @@ function drawCells(numberOfCells) {
 function drawField(numberOfRows, numberOfColumns, numberOfBombs) {
   const cells = document.querySelectorAll('.cell');
   let field = createField(numberOfRows, numberOfColumns, numberOfBombs);
-  let numberOfPlantedFlags = 0;
+  numberOfPlantedFlags = 0;
   messageDisplay.classList.remove('win');
   for (let i = 0; i < field.length; i++) {
     cells[i].classList.remove('num0', 'num1', 'num2', 'num3', 'num4', 'num5', 'num6', 'num7', 'num8', 'bombs', 'clicked', 'flag');
-    cells[i].addEventListener('contextmenu', function (event) {
-      event.preventDefault();
-      if (!gameOver && !field[i].open) {
-        if (!field[i].flag) {
-          this.classList.add('flag');
-          field[i].flag = true;
-          console.log(field[i]);
-          numberOfPlantedFlags++;
-        } else {
-          this.classList.remove('flag');
-          field[i].flag = false;
-          console.log(field[i]);
-          numberOfPlantedFlags--;
-        }
-        messageDisplay.textContent = (numberOfBombs - numberOfPlantedFlags) + " " + "flags left";
-        checkField(field);
-      }
-    });
+    setRemoveFlag(cells[i], field, field[i], numberOfBombs, numberOfPlantedFlags);
     if (field[i].bomb === '*') {
       cells[i].addEventListener('click', function () {
         if (!gameOver) {
@@ -108,6 +91,29 @@ function drawField(numberOfRows, numberOfColumns, numberOfBombs) {
       }
     }
   }
+}
+function setRemoveFlag(cell, arr, arrElement, numberOfBombs) {
+  messageDisplay.textContent = numberOfBombs + " flags left";
+  console.log('before:', numberOfPlantedFlags);
+  cell.addEventListener('contextmenu', function (event) {
+    event.preventDefault();
+    if (!gameOver && !arrElement.open) {
+      if (!arrElement.flag) {
+        this.classList.add('flag');
+        arrElement.flag = true;
+        console.log(arrElement);
+        numberOfPlantedFlags++;
+        console.log('numberOfPlantedFlags:', numberOfPlantedFlags);
+      } else {
+        this.classList.remove('flag');
+        arrElement.flag = false;
+        console.log(arrElement);
+        numberOfPlantedFlags--;
+      }
+      messageDisplay.textContent = (numberOfBombs - numberOfPlantedFlags) + " " + "flags left";
+      checkField(arr);
+    }
+  });
 }
 
 function openEmptyCells(cell, arr, numberOfColumns) {
@@ -130,12 +136,12 @@ function checkField(arr) {
   for (let i = 0; i < arr.length; i++) {
     if (arr[i].flag && arr[i].bomb !== '*') {
       gameOver = false;
-      console.log(i)
+      //console.log(i)
       break;
     }
     if (!arr[i].open && !arr[i].flag) {
       gameOver = false;
-      console.log(i)
+      //console.log(i)
       break;
     }
   }
@@ -146,14 +152,14 @@ function checkField(arr) {
 
 //! Create a field
 function createField(numberOfRows, numberOfColumns, numberOfBombs) {
-  let field = plantBombs(numberOfRows, numberOfColumns, numberOfBombs);
-  shuffle(field);
+  let field = createUnshaffledField(numberOfRows, numberOfColumns, numberOfBombs);
+  shuffleArray(field);
   plantNumbers(field, numberOfRows, numberOfColumns);
   return field;
 }
 
 // add cells on the field
-function addCells(numberOfRows, numberOfColumns) {
+function createEmptyField(numberOfRows, numberOfColumns) {
   let fieldWithCells = [];
   let numberOfCells = numberOfRows * numberOfColumns;
   for (let i = 0; i < numberOfCells; i++) {
@@ -161,7 +167,7 @@ function addCells(numberOfRows, numberOfColumns) {
       open: false,
       flag: false,
       bomb: "",
-      number: '',
+      number: 0,
       neighbours: []
     };
     fieldWithCells.push(cell);
@@ -169,9 +175,9 @@ function addCells(numberOfRows, numberOfColumns) {
   return fieldWithCells;
 }
 
-//  planting bomb on the field
-function plantBombs(numberOfRows, numberOfColumns, numberOfBombs) {
-  let fieldWithCells = addCells(numberOfRows, numberOfColumns);
+// planting bomb on the field
+function createUnshaffledField(numberOfRows, numberOfColumns, numberOfBombs) {
+  let fieldWithCells = createEmptyField(numberOfRows, numberOfColumns);
   let numberOfPlantingBombs = 0;
   let fieldWithBomb = fieldWithCells.map(function (cell) {
     if (numberOfPlantingBombs < numberOfBombs) {
@@ -187,7 +193,7 @@ function plantBombs(numberOfRows, numberOfColumns, numberOfBombs) {
 }
 
 //shuffle field одна из вариаций алгоритма Фишера-Йетса
-function shuffle(arr) {
+function shuffleArray(arr) {
   let j;
   let temp;
   for (let i = arr.length - 1; i > 0; i--) {
@@ -196,7 +202,6 @@ function shuffle(arr) {
     arr[j] = arr[i];
     arr[i] = temp;
   }
-  return arr;
 }
 
 // converting one-dimensional coordinates to two-dimensional
@@ -266,7 +271,6 @@ function plantNumbers(arr, numberOfRows, numberOfColumns) {
       arr[i].number = ''; //!
     }
   }
-  return arr;
 }
 
 //! Game over
