@@ -74,7 +74,6 @@ function createAndDrawField(numberOfRows, numberOfColumns, numberOfBombs) {
     cells[i].classList.remove('num0', 'num1', 'num2', 'num3', 'num4', 'num5', 'num6', 'num7', 'num8', 'bombs', 'open', 'flag');
     setRemoveFlag(cells[i], field, field[i], numberOfBombs, numberOfPlantedFlags);
     openCell(field[i], field, cells[i], numberOfColumns);
-    openCellsWithoutBombs(field[i], field, cells[i], numberOfColumns);
   }
 }
 
@@ -111,6 +110,8 @@ function openCell(arrElement, arr, cell, numberOfColumns) {
         if (!gameOver) {
           this.classList.add('num' + arrElement.number, 'open');
           openEmptyCells(arrElement, arr, numberOfColumns);
+          openCellsWithoutBombs(arrElement, arr, cell, numberOfColumns);
+          checkField(arr);
         }
       });
     }
@@ -131,21 +132,27 @@ function openEmptyCells(cell, arr, numberOfColumns) {
       }
     }
   }
-  checkField(arr);
 }
 
 function openCellsWithoutBombs(arrElement, arr, cell, numberOfColumns) {
   const cells = document.querySelectorAll('.cell');
   cell.addEventListener('dblclick', function () {
     if (arrElement.open && !gameOver) {
+      let allowToOpen = true;
       for (let j = 0; j < arrElement.neighbours.length; j++) {
         let k = arrElement.neighbours[j];
         let neighbourIndex = coordsToIndex(k, numberOfColumns);
         if (arr[neighbourIndex].bomb === '*' && !arr[neighbourIndex].flag) {
-          break;
-        } else {
+          allowToOpen = false;
+        }
+      }
+      if (allowToOpen) {
+        for (let j = 0; j < arrElement.neighbours.length; j++) {
+          let k = arrElement.neighbours[j];
+          let neighbourIndex = coordsToIndex(k, numberOfColumns);
           cells[neighbourIndex].classList.add('num' + arr[neighbourIndex].number, 'open');
-          openEmptyCells(arr[neighbourIndex], arr, numberOfColumns)
+          cell.open = true;
+          openEmptyCells(arr[neighbourIndex], arr, numberOfColumns);
         }
       }
     }
